@@ -6,12 +6,13 @@
     <title>
          <?php 
             if (isset($titulo_pagina) && !empty($titulo_pagina)) {
-                echo htmlspecialchars($titulo_pagina);
+                echo htmlspecialchars($titulo_pagina, ENT_QUOTES, 'UTF-8');
             } else {
                 echo "La Enciclopedia de Animales"; 
             }
          ?>
     </title>
+    <link rel="stylesheet" href="../estilos.css">
 </head>
 <body>
 
