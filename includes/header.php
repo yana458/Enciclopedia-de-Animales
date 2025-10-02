@@ -23,7 +23,6 @@
             <a href="register-animal.php">Registrar Nuevo Animal</a>
         </nav>
     </header>
-
-</body>
-</html>
+    
+<main class="container">
 
