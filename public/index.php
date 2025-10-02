@@ -9,18 +9,17 @@ include '../includes/header.php';
 require_once '../data/datos.php';
 ?>
 
-<main>
     <h2>Categorías de Animales</h2>
     <ul>
         <?php foreach ($categorias as $categoria): ?>
             <li>
-                <a href="category.php?id=<?php echo $categoria['id']; ?>">
-                    <?php echo htmlspecialchars($categoria['nombre']); ?>
+                <a href="category.php?id=<?php echo (int)$categoria['id']; ?>">
+                    <?php echo htmlspecialchars($categoria['nombre'], ENT_QUOTES, 'UTF-8'); ?>
                 </a>
             </li>
         <?php endforeach; ?>
     </ul>
-</main>
+
 
 
 <?php 
