@@ -1,83 +1,61 @@
 <?php
-// -------------------------------
-// PASO 2: Página de Categoría
-// -------------------------------
+// Título inicial
+$titulo_pagina = 'Categoría - Enciclopedia de Animales';
 
-// 1) Importamos los datos (categorías y animales)
-require_once '../data/datos.php';
+// Incluimos header (abre main)
+require_once __DIR__ . '/../includes/header.php';
 
-// 2) Recuperamos el ID de la categoría desde la URL (category.php?id=3)
-$id = isset($_GET['id']) ? (int) $_GET['id'] : 0;
+// Incluimos datos
+require_once __DIR__ . '/../data/datos.php';
 
-// 3) Validamos que el ID sea válido (> 0)
-if ($id <= 0) {
-    // Título genérico porque no hay categoría válida
-    $titulo_pagina = "Categoría - Enciclopedia de Animales";
-    require_once '../includes/header.php';
-    echo "<p>Parámetro <code>id</code> ausente o inválido.</p>";
-    require_once '../includes/footer.php';
+// Obtenemos el id de la categoría desde GET
+$cat_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+// Validación del id
+if ($cat_id === null || $cat_id === false) {
+    echo '<h2>Categoría no encontrada</h2>';
+    echo '<p>El identificador de la categoría no es válido.</p>';
+    require_once __DIR__ . '/../includes/footer.php';
     exit;
 }
 
-// 4) Buscamos la categoría por su ID (búsqueda simple con foreach)
-$categoria = null;
-foreach ($categorias as $cat) {
-    if ((int)$cat['id'] === $id) {
-        $categoria = $cat;
-        break;
-    }
+// Buscamos la categoría
+$categoria_encontrada = null;
+if (isset($categorias[$cat_id])) {
+    $categoria_encontrada = $categorias[$cat_id];
 }
 
-// 5) Si no se encuentra, mostramos mensaje y salimos
-if ($categoria === null) {
-    $titulo_pagina = "Categoría - Enciclopedia de Animales";
-    require_once '../includes/header.php';
-    echo "<p>Categoría no encontrada.</p>";
-    require_once '../includes/footer.php';
+// Si no se encontró
+if ($categoria_encontrada === null) {
+    echo '<h2>Categoría no encontrada</h2>';
+    echo '<p>No existe una categoría con ese identificador.</p>';
+    require_once __DIR__ . '/../includes/footer.php';
     exit;
 }
 
-// 6) Ya tenemos la categoría => ponemos el título ANTES de incluir la cabecera
-$titulo_pagina = "Categoría: " . $categoria['nombre'];
+// Mostramos nombre y descripción
+echo '<h2>' . htmlspecialchars($categoria_encontrada['nombre']) . '</h2>';
+echo '<p>' . htmlspecialchars($categoria_encontrada['descripcion']) . '</p>';
 
-// 7) Incluimos la cabecera (usa $titulo_pagina en <title>)
-require_once '../includes/header.php';
-?>
+// Listamos animales de esta categoría
+echo '<h3>Animales en esta categoría</h3>';
+echo '<ul>';
+$hay_animales = false;
 
-<!-- 8) Mostramos nombre y descripción de la categoría -->
-<h2><?php echo htmlspecialchars($categoria['nombre']); ?></h2>
-<p><?php echo htmlspecialchars($categoria['descripcion'] ?? ""); ?></p>
-
-<h3>Animales en esta categoría</h3>
-<ul>
-<?php
-    // 9) Recorremos los animales y mostramos los que tengan 'categoria' == id de la categoría
-    $encontrado = false;
-
-    foreach ($animales as $ani) {
-        // Usamos SOLO la clave 'categoria' como pediste
-        if (!isset($ani['categoria'])) {
-            continue; // si no tiene esa clave, lo saltamos
-        }
-
-        if ((int)$ani['categoria'] === (int)$categoria['id']) {
-            $encontrado = true;
-            ?>
-            <li>
-                <a href="animal.php?id=<?php echo (int)$ani['id']; ?>">
-                    <?php echo htmlspecialchars($ani['nombre']); ?>
-                </a>
-            </li>
-            <?php
-        }
+foreach ($animales as $a_id => $animal) { // $a_id es la clave (47293, etc.)
+    if ($animal['categoria_id'] == $cat_id) {
+        echo '<li><a href="/animal.php?id=' . urlencode($a_id) . '">' 
+             . htmlspecialchars($animal['nombre']) . '</a></li>';
+        $hay_animales = true;
     }
+}
 
-    if (!$encontrado) {
-        echo "<li>No hay animales en esta categoría.</li>";
-    }
+if (!$hay_animales) {
+    echo '<li>No hay animales en esta categoría.</li>';
+}
+
+echo '</ul>';
+
+// Footer
+require_once __DIR__ . '/../includes/footer.php';
 ?>
-</ul>
-
-<?php
-// 10) Pie de página
-require_once '../includes/footer.php';
