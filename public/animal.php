@@ -39,10 +39,11 @@ echo '<p><strong>Hábitat:</strong> ' . htmlspecialchars($animal_encontrado['hab
 
 // Imagen
 if (!empty($animal_encontrado['imagen'])) {
-    echo '<div class="animal-card">';
+    // Contenedor centrado para la imagen
+    echo '<div class="animal-imagen">';
     echo '<img src="uploads/images/' . htmlspecialchars($animal_encontrado['imagen']) . '" alt="' 
          . htmlspecialchars($animal_encontrado['nombre']) . '">';
-    echo '</div>';
+    echo '</div>'; // Fin del bloque imagen
 }
 
 // Características
