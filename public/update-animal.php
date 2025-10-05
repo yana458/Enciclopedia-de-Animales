@@ -22,12 +22,9 @@ if ($animal_id === null || $animal_id === false) {
 // Buscamos el animal en $animales
 $animal_encontrado = null; // Inicializamos
 if (isset($animales) && is_array($animales)) {
-    foreach ($animales as $a) { // Recorremos animales
-        if (isset($a['id']) && $a['id'] == $animal_id) { // Si coincide
-            $animal_encontrado = $a; // Guardamos
-            break; // Salimos
-        }
-    }
+    // Buscamos el animal en $animales usando la clave del array
+$animal_encontrado = isset($animales[$animal_id]) ? $animales[$animal_id] : null;
+
 }
 
 // Si no existe el animal, indicamos que no se puede actualizar
